@@ -1,0 +1,4 @@
+# Zależności aplikacji Streamlit (Streamlit Community Cloud czyta ten plik)
+streamlit>=1.40
+pandas>=2.2
+pyarrow>=16

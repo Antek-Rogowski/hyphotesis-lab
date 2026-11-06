@@ -1,0 +1,62 @@
+name: Phase 0 probe
+
+# Faza 0: sprawdzenie, czy yfinance działa z runnera GitHub Actions.
+# Uruchamiany ręcznie (Actions -> Phase 0 probe -> Run workflow).
+# Harmonogram (cron) dodamy dopiero po pozytywnym wyniku sondy.
+on:
+  workflow_dispatch:
+    inputs:
+      tickers:
+        description: "Symbole po przecinku"
+        default: "GLD,IAU,SLV,CPER,USO"
+        required: true
+      period:
+        description: "Okres historii (np. 10y)"
+        default: "10y"
+        required: true
+
+permissions:
+  contents: write   # potrzebne do zapisania plików Parquet z powrotem do repozytorium
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-pipeline.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements-pipeline.txt
+
+      - name: Run probe
+        env:
+          TICKERS: ${{ inputs.tickers }}
+          PERIOD: ${{ inputs.period }}
+        run: python scripts/phase0_probe.py --tickers "$TICKERS" --period "$PERIOD" --out-dir data
+
+      - name: Upload report and data as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase0-probe
+          path: data/
+          if-no-files-found: warn
+
+      - name: Commit data to repository
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          if git diff --cached --quiet; then
+            echo "Brak zmian do zapisania."
+          else
+            git commit -m "Phase 0 probe: update data"
+            git push
+          fi
