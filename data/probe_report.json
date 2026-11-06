@@ -1,0 +1,97 @@
+{
+  "generated_at": "2026-11-06 18:12:26.709695",
+  "source": "yfinance",
+  "period": "10y",
+  "overall_status": "warn",
+  "environment": {
+    "python": "3.12.16",
+    "pandas": "3.1.1",
+    "yfinance": "1.8.0",
+    "platform": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.39",
+    "github_actions": true
+  },
+  "results": [
+    {
+      "status": "ok",
+      "rows": 2514,
+      "first_date": "2016-11-07",
+      "last_date": "2026-11-06",
+      "years": 10.0,
+      "stale_days": 0,
+      "max_abs_daily_return": 0.1027,
+      "fails": [],
+      "warns": [],
+      "notes": [],
+      "file": "GLD.parquet",
+      "symbol": "GLD",
+      "seconds": 1.8
+    },
+    {
+      "status": "ok",
+      "rows": 2514,
+      "first_date": "2016-11-07",
+      "last_date": "2026-11-06",
+      "years": 10.0,
+      "stale_days": 0,
+      "max_abs_daily_return": 0.1021,
+      "fails": [],
+      "warns": [],
+      "notes": [],
+      "file": "IAU.parquet",
+      "symbol": "IAU",
+      "seconds": 0.2
+    },
+    {
+      "status": "warn",
+      "rows": 2514,
+      "first_date": "2016-11-07",
+      "last_date": "2026-11-06",
+      "years": 10.0,
+      "stale_days": 0,
+      "max_abs_daily_return": 0.2854,
+      "fails": [],
+      "warns": [
+        "największa dzienna zmiana 28.5%"
+      ],
+      "notes": [],
+      "file": "SLV.parquet",
+      "symbol": "SLV",
+      "seconds": 0.3
+    },
+    {
+      "status": "warn",
+      "rows": 2514,
+      "first_date": "2016-11-07",
+      "last_date": "2026-11-06",
+      "years": 10.0,
+      "stale_days": 0,
+      "max_abs_daily_return": 0.1931,
+      "fails": [],
+      "warns": [
+        "największa dzienna zmiana 19.3%",
+        "sesje z zerowym wolumenem: 21"
+      ],
+      "notes": [],
+      "file": "CPER.parquet",
+      "symbol": "CPER",
+      "seconds": 0.3
+    },
+    {
+      "status": "warn",
+      "rows": 2514,
+      "first_date": "2016-11-07",
+      "last_date": "2026-11-06",
+      "years": 10.0,
+      "stale_days": 0,
+      "max_abs_daily_return": 0.2532,
+      "fails": [],
+      "warns": [
+        "największa dzienna zmiana 25.3%"
+      ],
+      "notes": [],
+      "file": "USO.parquet",
+      "symbol": "USO",
+      "seconds": 0.2
+    }
+  ]
+}
