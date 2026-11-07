@@ -34,6 +34,10 @@ MAX_STALE_DAYS = 7       # starsze ostatnie notowanie => ostrzeżenie
 GAP_WARN_DAYS = 5        # przerwa dłuższa niż tyle dni kalendarzowych => ostrzeżenie
 JUMP_WARN = 0.15         # dzienna zmiana skorygowanej ceny większa niż 15% => ostrzeżenie
 
+SESSION_DONE_MINUTES_ET = 16 * 60 + 30  # 16:00 ET zamknięcie + 30 min bufora
+TOP_MOVES = 5
+MAX_LISTED_ZERO_VOLUME_DATES = 60
+
 STATUS_ORDER = {"ok": 0, "warn": 1, "fail": 2}
 
 
@@ -109,6 +113,19 @@ def standardize(raw: pd.DataFrame, symbol: str, source: str) -> tuple[pd.DataFra
     return df, notes
 
 
+def drop_partial_session(df: pd.DataFrame, now_utc: pd.Timestamp | None = None) -> tuple[pd.DataFrame, bool]:
+    """Yahoo zwraca w trakcie sesji świeczkę z bieżącego dnia (cena na żywo).
+    Odrzucamy ją, jeśli w Nowym Jorku jest ten sam dzień i sesja jeszcze się nie skończyła.
+    """
+    now_utc = now_utc if now_utc is not None else pd.Timestamp.now(tz="UTC")
+    now_et = now_utc.tz_convert("America/New_York")
+    today_et = pd.Timestamp(now_et.date())
+    minutes_et = now_et.hour * 60 + now_et.minute
+    if len(df) and df.index.max() == today_et and minutes_et < SESSION_DONE_MINUTES_ET:
+        return df.iloc[:-1], True
+    return df, False
+
+
 def validate(df: pd.DataFrame) -> dict:
     """Zwraca metryki i listy problemów (fail = blokujące, warn = do wyjaśnienia)."""
     fails: list[str] = []
@@ -150,6 +167,21 @@ def validate(df: pd.DataFrame) -> dict:
     if zero_volume:
         warns.append(f"sesje z zerowym wolumenem: {zero_volume}")
 
+    adj_rets = df["adj_close"].pct_change()
+    close_rets = df["close"].pct_change()
+    top_moves = []
+    for day in adj_rets.dropna().abs().sort_values(ascending=False).head(TOP_MOVES).index:
+        close_ret = close_rets.loc[day]
+        top_moves.append(
+            {
+                "date": str(day.date()),
+                "adj_return": round(float(adj_rets.loc[day]), 4),
+                "close_return": None if pd.isna(close_ret) else round(float(close_ret), 4),
+                "volume": int(df.loc[day, "volume"]),
+            }
+        )
+    zero_volume_dates = [str(d.date()) for d in df.index[df["volume"] <= 0]]
+
     status = "fail" if fails else ("warn" if warns else "ok")
     return {
         "status": status,
@@ -159,6 +191,9 @@ def validate(df: pd.DataFrame) -> dict:
         "years": round(years, 2),
         "stale_days": stale_days,
         "max_abs_daily_return": round(max_jump, 4),
+        "top_moves": top_moves,
+        "zero_volume_count": zero_volume,
+        "zero_volume_dates": zero_volume_dates[:MAX_LISTED_ZERO_VOLUME_DATES],
         "fails": fails,
         "warns": warns,
     }
@@ -186,6 +221,32 @@ def render_markdown(report: dict) -> str:
             f"| {r['symbol']} | {r['status'].upper()} | {r['rows']} | {r['first_date']} | "
             f"{r['last_date']} | {r['years']} | {remarks} |"
         )
+    detail_lines: list[str] = []
+    for r in report["results"]:
+        if "top_moves" not in r:
+            continue
+        for m in r["top_moves"][:3]:
+            close_ret = "-" if m["close_return"] is None else f"{m['close_return']:+.1%}"
+            detail_lines.append(
+                f"| {r['symbol']} | {m['date']} | {m['adj_return']:+.1%} | {close_ret} | {m['volume']:,} |"
+            )
+    if detail_lines:
+        lines += [
+            "",
+            "### Największe dzienne zmiany (zmiana ceny skorygowanej, zmiana ceny zamknięcia, wolumen)",
+            "",
+            "| Symbol | Data | Zmiana adj | Zmiana close | Wolumen |",
+            "|---|---|---|---|---|",
+            *detail_lines,
+        ]
+    zero_lines = [
+        f"- {r['symbol']}: {r['zero_volume_count']} sesji, od {r['zero_volume_dates'][0]} do {r['zero_volume_dates'][-1]}"
+        for r in report["results"]
+        if r.get("zero_volume_dates")
+    ]
+    if zero_lines:
+        lines += ["", "### Sesje z zerowym wolumenem", "", *zero_lines]
+
     env = report["environment"]
     lines += [
         "",
@@ -238,6 +299,10 @@ def main(argv: list[str] | None = None) -> int:
         try:
             raw = make_synthetic(symbol) if args.synthetic else fetch_yfinance(symbol, args.period)
             df, notes = standardize(raw, symbol, source)
+            if not args.synthetic:
+                df, dropped = drop_partial_session(df)
+                if dropped:
+                    notes.append("odrzucono niepełną bieżącą sesję")
             result = validate(df)
             result["notes"] = notes
             df.to_parquet(out_dir / f"{symbol}.parquet", engine="pyarrow")
