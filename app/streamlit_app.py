@@ -83,6 +83,31 @@ def pct(x, digits: int = 1) -> str:
     return "-" if x is None else f"{x * 100:.{digits}f}%"
 
 
+def trials_label(n: int) -> str:
+    """Odmiana po 'na': 1 próbę, 2-4 próby, 5+ prób."""
+    if n == 1:
+        return "próbę"
+    if 2 <= n % 10 <= 4 and not 12 <= n % 100 <= 14:
+        return "próby"
+    return "prób"
+
+
+def settings_line(spec: dict) -> str:
+    """Najważniejsze ustawienia wyniku w jednym wierszu, żeby było widać, czym wynik się różni."""
+    costs = spec["costs"]
+    if costs["enabled"]:
+        parts = [f"prowizja {costs['commission_bps']:g} bp", f"spread {costs['spread_bps']:g} bp",
+                 f"poślizg {costs['slippage_bps']:g} bp"]
+        if spec["sides"] != "long":
+            parts.append(f"pożyczka {costs['borrow_bps_annual']:g} bp rocznie")
+        cost_text = f"**koszty: tak** ({', '.join(parts)})"
+    else:
+        cost_text = "koszty: nie"
+    return (f"Pozycje: {SIDES[spec['sides']].lower()} | horyzont {spec['horizon']} sesji | "
+            f"wykonanie: {EXECUTIONS[spec['execution']].lower()} | {cost_text} | "
+            f"hold-out {round(spec['holdout_frac'] * 100)}%")
+
+
 def build_spec(cfg: dict) -> HypothesisSpec:
     return HypothesisSpec(
         symbol=cfg["symbol"], hypothesis_type=cfg["htype"], params=cfg["params"], horizon=cfg["horizon"],
@@ -205,7 +230,8 @@ if run_clicked:
             history.append({
                 "key": run_key, "czas": datetime.now().strftime("%H:%M:%S"), "symbol": result.spec["symbol"],
                 "hipoteza": HYPOTHESES[result.spec["hypothesis_type"]][0], "parametry": str(result.spec["params"]),
-                "horyzont": result.spec["horizon"], "skrót": result.spec_hash,
+                "horyzont": result.spec["horizon"], "wykonanie": result.spec["execution"],
+                "koszty": "tak" if result.spec["costs"]["enabled"] else "nie", "skrót": result.spec_hash,
                 "zdarzenia": full.get("n_trades", 0), "trafność": full.get("hit_rate"),
                 "różnica vs baza": full.get("hit_rate_diff"), "p": full.get("p_value_binomial"),
             })
@@ -276,6 +302,7 @@ def show_result(state: dict) -> None:
     st.subheader(f"{spec['symbol']}: {HYPOTHESES[spec['hypothesis_type']][0]} {spec['params']}")
     st.caption(f"Okres {res.first_date} do {res.last_date} ({res.n_sessions} sesji) | skrót specyfikacji "
                f"{res.spec_hash} | skrót danych {res.data_fingerprint}")
+    st.caption(settings_line(spec))
     if state["config_sig"] != config_sig:
         st.info("Ustawienia w panelu różnią się od wyświetlanego wyniku. Kliknij Uruchom analizę, aby je zastosować.")
 
@@ -291,9 +318,10 @@ def show_result(state: dict) -> None:
     cols[0].metric("Trafność", pct(full["hit_rate"]), f"{full['hit_rate_diff'] * 100:+.1f} pp vs baza",
                    delta_color="off")
     cols[1].metric("Baza porównawcza", pct(full["baseline_hit_rate"]))
-    cols[2].metric("Zdarzenia", full["n_trades"], f"efektywnie ok. {full['n_effective']}", delta_color="off")
-    cols[3].metric("p (dwumianowe)", f"{p_value:.3f}",
-                   f"po korekcie na {trials} prób: {min(1.0, p_value * trials):.3f}", delta_color="off")
+    cols[2].metric("Zdarzenia", full["n_trades"])
+    cols[2].caption(f"efektywnie ok. {full['n_effective']}")
+    cols[3].metric("p (dwumianowe)", f"{p_value:.3f}")
+    cols[3].caption(f"po korekcie na {trials} {trials_label(trials)}: {min(1.0, p_value * trials):.3f}")
 
     lo, hi = full["hit_rate_ci95"]
     if lo <= full["baseline_hit_rate"] <= hi and p_value >= 0.05:
