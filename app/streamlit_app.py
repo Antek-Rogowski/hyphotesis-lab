@@ -23,26 +23,13 @@ import streamlit as st  # noqa: E402
 from hypothesis_lab import CostModel, HypothesisSpec, load_prices, run_hypothesis  # noqa: E402
 from hypothesis_lab.instruments import describe  # noqa: E402
 from hypothesis_lab.pipeline import STATUS_FILE  # noqa: E402
-from hypothesis_lab.signals import PARAM_SPECS  # noqa: E402
+from hypothesis_lab.signals import REGISTRY  # noqa: E402
 
 DATA_DIR = Path(os.environ.get("DATA_DIR", ROOT / "data"))
 SYMBOL_ORDER = ["GLD", "SLV", "CPER", "USO"]
 
-HYPOTHESES = {
-    "mean_reversion": ("Powrót do średniej",
-                       "Long, gdy cena jest k odchyleń standardowych poniżej średniej z W sesji, short, gdy powyżej."),
-    "momentum": ("Momentum",
-                 "Long po dodatnim zwrocie z ostatnich L sesji, short po ujemnym (powyżej progu)."),
-    "shock_rebound": ("Odbicie po gwałtownym ruchu",
-                      "Long po dziennym spadku o co najmniej X%, short po dziennym wzroście o co najmniej X%."),
-}
-PARAM_LABELS = {
-    "W": "Okno średniej W (sesje)",
-    "k": "Próg k (odchylenia standardowe)",
-    "L": "Okno zwrotu L (sesje)",
-    "threshold": "Minimalny zwrot (ułamek, 0.01 = 1%)",
-    "x_pct": "Próg dziennej zmiany X (%)",
-}
+# Hipotezy, ich opisy i parametry pochodzą z rejestru (hypothesis_lab/signals.py oraz classics.py).
+HYPOTHESES = {key: (d.title, d.description) for key, d in REGISTRY.items()}
 SIDES = {"both": "Long i short", "long": "Tylko long", "short": "Tylko short"}
 TARGETS = {"sign": "Wynik netto powyżej zera", "threshold": "Wynik netto co najmniej X%"}
 EXECUTIONS = {"close_t": "Cena zamknięcia sesji sygnału", "open_t+1": "Otwarcie następnej sesji"}
@@ -149,18 +136,23 @@ with st.sidebar:
 
     st.subheader("2. Hipoteza")
     htype = st.selectbox("Hipoteza", list(HYPOTHESES), key="htype", format_func=lambda k: HYPOTHESES[k][0])
-    st.caption(HYPOTHESES[htype][1])
+    definition = REGISTRY[htype]
+    st.caption(f"{definition.family}. {definition.description}"
+               + (f" Źródło: {definition.reference}." if definition.reference else ""))
     params: dict = {}
-    for name, (typ, default, lo, hi, lo_inclusive) in PARAM_SPECS[htype].items():
+    for name, pdef in definition.params.items():
         key = f"param_{htype}_{name}"
-        if typ is int:
-            params[name] = st.number_input(PARAM_LABELS[name], min_value=int(lo), max_value=int(hi),
-                                           value=int(default), step=1, key=key)
+        if pdef.typ is bool:
+            params[name] = st.checkbox(pdef.label, value=bool(pdef.default), key=key)
+        elif pdef.typ is int:
+            params[name] = st.number_input(pdef.label, min_value=int(pdef.lo), max_value=int(pdef.hi),
+                                           value=int(pdef.default), step=1, key=key)
         else:
-            step = 0.005 if name == "threshold" else 0.1
-            params[name] = st.number_input(PARAM_LABELS[name], min_value=float(lo if lo_inclusive else lo + step),
-                                           max_value=float(hi), value=float(default), step=step,
-                                           format="%.3f" if name == "threshold" else "%.1f", key=key)
+            step = pdef.step or 0.1
+            params[name] = st.number_input(pdef.label,
+                                           min_value=float(pdef.lo if pdef.lo_inclusive else pdef.lo + step),
+                                           max_value=float(pdef.hi), value=float(pdef.default), step=step,
+                                           format="%.3f" if step < 0.01 else "%.1f", key=key)
 
     st.subheader("3. Pozycje i cel")
     horizon = st.number_input("Horyzont (sesje trzymania pozycji)", min_value=1, max_value=60, value=5,

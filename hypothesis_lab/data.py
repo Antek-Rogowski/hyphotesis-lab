@@ -15,6 +15,7 @@ def prepare_prices(df: pd.DataFrame) -> pd.DataFrame:
     Dodaje:
       adj_open     - otwarcie skorygowane tym samym współczynnikiem co adj_close/close
                      (potrzebne, gdy wykonanie transakcji następuje po otwarciu),
+      adj_high, adj_low - maksimum i minimum skorygowane tym samym współczynnikiem (kanały cenowe),
       zero_volume  - znacznik sesji z zerowym wolumenem (cena może być nieaktualna).
     """
     missing = [c for c in REQUIRED_COLUMNS if c not in df.columns]
@@ -33,6 +34,8 @@ def prepare_prices(df: pd.DataFrame) -> pd.DataFrame:
 
     factor = out["adj_close"] / out["close"]
     out["adj_open"] = out["open"] * factor
+    out["adj_high"] = out["high"] * factor
+    out["adj_low"] = out["low"] * factor
     out["zero_volume"] = out["volume"] <= 0
     return out
 

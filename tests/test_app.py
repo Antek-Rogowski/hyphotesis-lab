@@ -108,3 +108,57 @@ def test_update_status_banner(tmp_path, monkeypatch):
     at = AppTest.from_file(APP, default_timeout=60).run()
     assert not at.exception
     assert any("SLV: błąd sieci" in e.value for e in at.error)
+
+
+def _captions(app):
+    return [c.value for c in app.caption]
+
+
+def test_result_shows_active_settings_and_cost_state(app):
+    app.sidebar.button(key="run").click().run()
+    line = next(c for c in _captions(app) if c.startswith("Pozycje:"))
+    assert "koszty: nie" in line and "wykonanie: cena zamknięcia sesji sygnału" in line and "hold-out 30%" in line
+    app.sidebar.checkbox(key="costs_on").check().run()
+    app.sidebar.button(key="run").click().run()
+    line = next(c for c in _captions(app) if c.startswith("Pozycje:"))
+    assert "**koszty: tak**" in line and "prowizja 1 bp" in line and "spread 3 bp" in line
+
+
+def test_trial_count_uses_correct_polish_plural(app):
+    app.sidebar.button(key="run").click().run()
+    assert any("po korekcie na 1 próbę" in c for c in _captions(app))
+    for horizon in (6, 7, 8, 9, 10):
+        app.sidebar.number_input(key="horizon").set_value(horizon).run()
+        app.sidebar.button(key="run").click().run()
+    assert any("po korekcie na 6 prób" in c for c in _captions(app))
+
+
+from hypothesis_lab.signals import REGISTRY  # noqa: E402
+
+
+@pytest.mark.parametrize("htype", sorted(REGISTRY))
+def test_every_registered_hypothesis_runs_from_the_interface(app, htype):
+    app.sidebar.selectbox(key="htype").select(htype).run()
+    assert not app.exception
+    app.sidebar.button(key="run").click().run()
+    assert not app.exception
+    result = app.session_state["run_state"]["result"]
+    assert result.spec["hypothesis_type"] == htype
+    assert any(REGISTRY[htype].title in s.value for s in app.subheader)
+
+
+def test_boolean_parameter_is_a_checkbox_and_reaches_the_spec(app):
+    app.sidebar.selectbox(key="htype").select("sma_crossover").run()
+    app.sidebar.checkbox(key="param_sma_crossover_only_cross").check().run()
+    app.sidebar.button(key="run").click().run()
+    assert not app.exception
+    assert app.session_state["run_state"]["result"].spec["params"]["only_cross"] is True
+
+
+def test_inconsistent_parameters_show_an_error_instead_of_crashing(app):
+    app.sidebar.selectbox(key="htype").select("sma_crossover").run()
+    app.sidebar.number_input(key="param_sma_crossover_fast").set_value(60).run()
+    app.sidebar.number_input(key="param_sma_crossover_slow").set_value(50).run()
+    app.sidebar.button(key="run").click().run()
+    assert not app.exception
+    assert any("fast < slow" in e.value for e in app.error)

@@ -1,4 +1,5 @@
 """Hypothesis Lab - silnik testowania hipotez giełdowych (Faza 1)."""
+from . import classics as _classics  # noqa: F401  (rejestruje klasyczne hipotezy)
 from .data import load_prices, prepare_prices
 from .engine import HypothesisResult, evaluate_signals, run_hypothesis
 from .spec import CostModel, HypothesisSpec

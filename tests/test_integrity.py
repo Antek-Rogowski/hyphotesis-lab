@@ -11,7 +11,16 @@ PARAMS = {
     "mean_reversion": {"W": 20, "k": 1.5},
     "momentum": {"L": 10, "threshold": 0.01},
     "shock_rebound": {"x_pct": 1.0},
+    "sma_crossover": {"fast": 10, "slow": 40, "only_cross": False},
+    "donchian_breakout": {"N": 20},
+    "rsi_reversal": {"n": 14, "low": 30.0, "high": 70.0},
+    "tsmom": {"lookback": 120, "skip": 10},
+    "turn_of_month": {"days_before_end": 0},
 }
+
+
+def test_every_registered_hypothesis_is_covered_by_the_integrity_tests():
+    assert set(PARAMS) == set(PARAM_SPECS)
 
 
 CUTS = [250, 400, 550, 700, 850, 1000]
@@ -86,3 +95,17 @@ def test_momentum_on_noise_also_has_no_edge():
         if full["n_trades"] >= 20:
             diffs.append(full["hit_rate_diff"])
     assert abs(np.mean(diffs)) < 0.01
+
+
+@pytest.mark.parametrize("htype", sorted(PARAM_SPECS))
+def test_no_hypothesis_finds_an_edge_in_pure_noise(htype):
+    """Na błądzeniu losowym średnia różnica trafności względem bazy ma być bliska zera dla KAŻDEJ hipotezy."""
+    spec = HypothesisSpec(symbol="SYN", hypothesis_type=htype, params=PARAMS[htype], horizon=5,
+                          holdout_frac=0.0, n_boot=50, sensitivity_top_days=0)
+    diffs = []
+    for seed in range(60):
+        full = run_hypothesis(random_walk_prices(seed + 5000), spec).summaries["full"]
+        if full["n_trades"] >= 20:
+            diffs.append(full["hit_rate_diff"])
+    assert len(diffs) >= 50
+    assert abs(np.mean(diffs)) < 0.02, f"{htype}: średnia różnica {np.mean(diffs):+.3f}"

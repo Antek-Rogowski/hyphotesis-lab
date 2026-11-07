@@ -120,3 +120,29 @@ prób) i ostrzeżenia, a w zakładkach: tabelę segmentów (cały okres, próba,
 pełną specyfikację z eksportem JSON i historię prób w bieżącej sesji.
 
 Historia prób (licznik do korekty na wielokrotne testowanie) jest przechowywana w sesji przeglądarki i znika po odświeżeniu strony.
+
+---
+
+# Hipotezy w osobnych plikach
+
+Hipotezy rejestrują się w rejestrze (`hypothesis_lab/signals.py`), a interfejs, CLI i walidacja budują się z niego automatycznie.
+Podstawowe trzy są w `signals.py`, klasyczne pięć w osobnym pliku `hypothesis_lab/classics.py`.
+
+| Klucz | Rodzina | Domyślne parametry | Źródło |
+|---|---|---|---|
+| `sma_crossover` | Trend | fast=20, slow=100, only_cross=False | Brock, Lakonishok, LeBaron (1992); Faber (2007) |
+| `donchian_breakout` | Wybicie | N=20 | Donchian; strategia Żółwi |
+| `rsi_reversal` | Odwrócenie | n=14, low=30, high=70 | Wilder (1978) |
+| `tsmom` | Momentum | lookback=252, skip=21 | Moskowitz, Ooi, Pedersen (2012) |
+| `turn_of_month` | Kalendarz | days_before_end=0 (horyzont ok. 4 sesji) | Ariel (1987); Lakonishok, Smidt (1988) |
+
+CLI, np.: `python -m hypothesis_lab.cli --symbol GLD --type donchian_breakout --param N=20 --horizon 5`
+(parametr logiczny podajesz jako 0 lub 1: `--param only_cross=1`).
+
+## Jak dodać własną hipotezę
+
+1. Utwórz plik, np. `hypothesis_lab/moje.py`, z funkcją zwracającą sygnał (+1 long, -1 short, 0 brak) i dekoratorem `@register(...)`
+   (wzór jest na górze `classics.py`). Korzystaj tylko z danych z sesji t i wcześniejszych.
+2. Dodaj do `hypothesis_lab/__init__.py` linię `from . import moje as _moje  # noqa: F401`.
+3. Gotowe: hipoteza pojawia się w interfejsie i CLI, a testy integralności (`tests/test_integrity.py`) sprawdzą ją pod kątem
+   wycieku przyszłości i przewagi w szumie, jeśli dopiszesz jej parametry do słownika `PARAMS` w tym pliku.
