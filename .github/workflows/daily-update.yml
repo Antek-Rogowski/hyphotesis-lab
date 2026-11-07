@@ -1,0 +1,65 @@
+name: Daily data update
+
+# Codzienna aktualizacja notowań GLD, SLV, CPER i USO.
+#  - 22:45 UTC w dni robocze: po zamknięciu giełdy USA zarówno w czasie letnim (18:45 ET), jak i zimowym (17:45 ET),
+#  - 05:30 UTC (wt-sob): poranne uzupełnienie, gdyby Yahoo spóźnił się z danymi poprzedniego dnia.
+# Zadanie jest idempotentne, więc dodatkowe uruchomienie niczego nie psuje.
+# Nieudane uruchomienie to alarm: GitHub wysyła e-mail o błędzie workflow (jeśli masz włączone powiadomienia).
+on:
+  schedule:
+    - cron: "45 22 * * 1-5"
+    - cron: "30 5 * * 2-6"
+  workflow_dispatch:
+    inputs:
+      force_full:
+        description: "Pełne odświeżenie 10 lat zamiast aktualizacji przyrostowej"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write   # zapis zaktualizowanych plików Parquet do repozytorium
+
+concurrency:
+  group: data-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-pipeline.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements-pipeline.txt
+
+      - name: Update data
+        env:
+          FORCE_FULL: ${{ inputs.force_full }}
+        run: |
+          if [ "$FORCE_FULL" = "true" ]; then
+            python scripts/update_data.py --data-dir data --force-full
+          else
+            python scripts/update_data.py --data-dir data
+          fi
+
+      # Zapisujemy to, co się udało, także gdy któryś symbol zawiódł (job i tak zostanie oznaczony jako błąd).
+      - name: Commit updated data
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          if git diff --cached --quiet; then
+            echo "Brak zmian do zapisania."
+          else
+            git commit -m "Daily data update $(date -u +%F)"
+            git pull --rebase origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi

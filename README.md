@@ -85,6 +85,38 @@ Dane są czytane z `data/<SYMBOL>.parquet` (te same pliki, które zapisuje sonda
 
 `tests/` zawiera: ręcznie policzone przykłady, test wycieku przyszłości (z meta-testem, który sprawdza, że detektor wykrywa znane wycieki), test błądzenia losowego (brak "przewagi" w szumie), testy specyfikacji i statystyki.
 
-## Usuwanie IAU
 
-Wybrano GLD jako fundusz na złoto. Plik `data/IAU.parquet` w repozytorium można usunąć.
+---
+
+# Faza 2: codzienny job i interfejs
+
+## Codzienna aktualizacja danych
+
+Workflow `.github/workflows/daily-update.yml` uruchamia `scripts/update_data.py`:
+
+- harmonogram: 22:45 UTC w dni robocze (po zamknięciu giełdy USA w czasie letnim i zimowym) oraz 05:30 UTC wt-sob jako poranne uzupełnienie; zadanie jest idempotentne,
+- dane GLD, SLV, CPER, USO (`--symbols` zmienia listę), okno do 10 lat,
+- niepełna bieżąca sesja jest odrzucana, ostatnie 5 sesji jest zawsze nadpisywane świeżymi danymi,
+- rozbieżność starszych sesji względem nowego pobrania (split, dywidenda) uruchamia pełne odświeżenie symbolu,
+- błędna świeczka (np. high < low) nie trafia do pliku, a zadanie kończy się błędem,
+- po aktualizacji sprawdzane są: spójność ostatniej sesji między symbolami i aktualność danych (maks. 5 dni),
+- wynik zapisuje `data/update_status.json`, a podsumowanie trafia do zakładki Summary uruchomienia,
+- alarm: nieudane uruchomienie workflow (GitHub wysyła e-mail, jeśli masz włączone powiadomienia),
+- zmiany w `data/` są commitowane do repozytorium, a Streamlit Community Cloud wdraża je automatycznie.
+
+Ręczne uruchomienie: Actions -> Daily data update -> Run workflow (opcja "force_full" robi pełne odświeżenie 10 lat).
+Lokalnie: `python scripts/update_data.py` (opcje `--force-full`, `--symbols GLD,SLV`).
+
+Pierwsze uruchomienie po wdrożeniu: usuń `data/IAU.parquet` (wybrano GLD) i uruchom workflow raz z "force_full".
+Plik `scripts/phase0_probe.py` jest pozostałością Fazy 0 i można go usunąć.
+
+## Interfejs (Streamlit)
+
+`app/streamlit_app.py`, lokalnie: `streamlit run app/streamlit_app.py` (katalog danych: zmienna `DATA_DIR`).
+
+Panel boczny prowadzi przez wybór: 1. instrument i okres, 2. hipoteza z parametrami, 3. horyzont, kierunek, cel i moment wykonania,
+koszty, hold-out i wykluczenia. Wynik pokazuje trafność na tle bazy, przedział ufności, p dwumianowe (także po korekcie na liczbę
+prób) i ostrzeżenia, a w zakładkach: tabelę segmentów (cały okres, próba, hold-out), zdarzenia z eksportem CSV, wykresy,
+pełną specyfikację z eksportem JSON i historię prób w bieżącej sesji.
+
+Historia prób (licznik do korekty na wielokrotne testowanie) jest przechowywana w sesji przeglądarki i znika po odświeżeniu strony.

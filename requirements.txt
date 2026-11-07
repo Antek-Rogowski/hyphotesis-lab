@@ -1,4 +1,5 @@
 # Zależności aplikacji Streamlit (Streamlit Community Cloud czyta ten plik)
 streamlit>=1.40
 pandas>=2.2
+numpy>=1.26
 pyarrow>=16
