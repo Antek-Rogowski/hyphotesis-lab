@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-06 18:12:26.709695",
+  "generated_at": "2026-11-07 08:29:17.581096",
   "source": "yfinance",
   "period": "10y",
   "overall_status": "warn",
@@ -17,14 +17,48 @@
       "first_date": "2016-11-07",
       "last_date": "2026-11-06",
       "years": 10.0,
-      "stale_days": 0,
+      "stale_days": 1,
       "max_abs_daily_return": 0.1027,
+      "top_moves": [
+        {
+          "date": "2026-01-30",
+          "adj_return": -0.1027,
+          "close_return": -0.1027,
+          "volume": 86593500
+        },
+        {
+          "date": "2025-10-21",
+          "adj_return": -0.0643,
+          "close_return": -0.0643,
+          "volume": 54101400
+        },
+        {
+          "date": "2026-02-03",
+          "adj_return": 0.0636,
+          "close_return": 0.0636,
+          "volume": 28703500
+        },
+        {
+          "date": "2020-08-11",
+          "adj_return": -0.0537,
+          "close_return": -0.0537,
+          "volume": 45355000
+        },
+        {
+          "date": "2020-03-24",
+          "adj_return": 0.0485,
+          "close_return": 0.0485,
+          "volume": 20743500
+        }
+      ],
+      "zero_volume_count": 0,
+      "zero_volume_dates": [],
       "fails": [],
       "warns": [],
       "notes": [],
       "file": "GLD.parquet",
       "symbol": "GLD",
-      "seconds": 1.8
+      "seconds": 1.2
     },
     {
       "status": "ok",
@@ -32,13 +66,98 @@
       "first_date": "2016-11-07",
       "last_date": "2026-11-06",
       "years": 10.0,
-      "stale_days": 0,
+      "stale_days": 1,
       "max_abs_daily_return": 0.1021,
+      "top_moves": [
+        {
+          "date": "2026-01-30",
+          "adj_return": -0.1021,
+          "close_return": -0.1021,
+          "volume": 76121500
+        },
+        {
+          "date": "2026-02-03",
+          "adj_return": 0.0624,
+          "close_return": 0.0624,
+          "volume": 36182400
+        },
+        {
+          "date": "2025-10-21",
+          "adj_return": -0.0621,
+          "close_return": -0.0621,
+          "volume": 39834100
+        },
+        {
+          "date": "2020-08-11",
+          "adj_return": -0.0533,
+          "close_return": -0.0533,
+          "volume": 25563550
+        },
+        {
+          "date": "2020-03-24",
+          "adj_return": 0.0451,
+          "close_return": 0.0451,
+          "volume": 20031350
+        }
+      ],
+      "zero_volume_count": 0,
+      "zero_volume_dates": [],
       "fails": [],
       "warns": [],
       "notes": [],
       "file": "IAU.parquet",
       "symbol": "IAU",
+      "seconds": 0.3
+    },
+    {
+      "status": "warn",
+      "rows": 2514,
+      "first_date": "2016-11-07",
+      "last_date": "2026-11-06",
+      "years": 10.0,
+      "stale_days": 1,
+      "max_abs_daily_return": 0.2854,
+      "top_moves": [
+        {
+          "date": "2026-01-30",
+          "adj_return": -0.2854,
+          "close_return": -0.2854,
+          "volume": 510687700
+        },
+        {
+          "date": "2026-02-05",
+          "adj_return": -0.1577,
+          "close_return": -0.1577,
+          "volume": 170928000
+        },
+        {
+          "date": "2020-08-11",
+          "adj_return": -0.1359,
+          "close_return": -0.1359,
+          "volume": 165630300
+        },
+        {
+          "date": "2020-03-16",
+          "adj_return": -0.1234,
+          "close_return": -0.1234,
+          "volume": 56056800
+        },
+        {
+          "date": "2026-02-12",
+          "adj_return": -0.1153,
+          "close_return": -0.1153,
+          "volume": 128437700
+        }
+      ],
+      "zero_volume_count": 0,
+      "zero_volume_dates": [],
+      "fails": [],
+      "warns": [
+        "największa dzienna zmiana 28.5%"
+      ],
+      "notes": [],
+      "file": "SLV.parquet",
+      "symbol": "SLV",
       "seconds": 0.2
     },
     {
@@ -47,25 +166,64 @@
       "first_date": "2016-11-07",
       "last_date": "2026-11-06",
       "years": 10.0,
-      "stale_days": 0,
-      "max_abs_daily_return": 0.2854,
-      "fails": [],
-      "warns": [
-        "największa dzienna zmiana 28.5%"
-      ],
-      "notes": [],
-      "file": "SLV.parquet",
-      "symbol": "SLV",
-      "seconds": 0.3
-    },
-    {
-      "status": "warn",
-      "rows": 2514,
-      "first_date": "2016-11-07",
-      "last_date": "2026-11-06",
-      "years": 10.0,
-      "stale_days": 0,
+      "stale_days": 1,
       "max_abs_daily_return": 0.1931,
+      "top_moves": [
+        {
+          "date": "2025-07-30",
+          "adj_return": -0.1931,
+          "close_return": -0.1931,
+          "volume": 3275600
+        },
+        {
+          "date": "2025-04-04",
+          "adj_return": -0.0848,
+          "close_return": -0.0848,
+          "volume": 519800
+        },
+        {
+          "date": "2022-11-04",
+          "adj_return": 0.0843,
+          "close_return": 0.0843,
+          "volume": 183100
+        },
+        {
+          "date": "2025-07-08",
+          "adj_return": 0.0841,
+          "close_return": 0.0841,
+          "volume": 1027900
+        },
+        {
+          "date": "2025-04-09",
+          "adj_return": 0.0785,
+          "close_return": 0.0785,
+          "volume": 448100
+        }
+      ],
+      "zero_volume_count": 21,
+      "zero_volume_dates": [
+        "2017-04-21",
+        "2017-06-14",
+        "2017-06-16",
+        "2017-06-20",
+        "2017-06-22",
+        "2017-06-29",
+        "2017-07-07",
+        "2017-07-11",
+        "2017-07-12",
+        "2017-07-13",
+        "2017-07-14",
+        "2017-07-19",
+        "2017-07-24",
+        "2017-09-28",
+        "2017-10-03",
+        "2018-05-18",
+        "2018-05-21",
+        "2018-05-22",
+        "2018-05-25",
+        "2018-05-31",
+        "2018-08-23"
+      ],
       "fails": [],
       "warns": [
         "największa dzienna zmiana 19.3%",
@@ -74,7 +232,7 @@
       "notes": [],
       "file": "CPER.parquet",
       "symbol": "CPER",
-      "seconds": 0.3
+      "seconds": 0.2
     },
     {
       "status": "warn",
@@ -82,8 +240,42 @@
       "first_date": "2016-11-07",
       "last_date": "2026-11-06",
       "years": 10.0,
-      "stale_days": 0,
+      "stale_days": 1,
       "max_abs_daily_return": 0.2532,
+      "top_moves": [
+        {
+          "date": "2020-03-09",
+          "adj_return": -0.2532,
+          "close_return": -0.2532,
+          "volume": 19268563
+        },
+        {
+          "date": "2020-04-21",
+          "adj_return": -0.2507,
+          "close_return": -0.2507,
+          "volume": 124913013
+        },
+        {
+          "date": "2020-03-18",
+          "adj_return": -0.1751,
+          "close_return": -0.1751,
+          "volume": 23764250
+        },
+        {
+          "date": "2020-04-02",
+          "adj_return": 0.1667,
+          "close_return": 0.1667,
+          "volume": 40226725
+        },
+        {
+          "date": "2020-04-03",
+          "adj_return": 0.1546,
+          "close_return": 0.1546,
+          "volume": 28238825
+        }
+      ],
+      "zero_volume_count": 0,
+      "zero_volume_dates": [],
       "fails": [],
       "warns": [
         "największa dzienna zmiana 25.3%"
