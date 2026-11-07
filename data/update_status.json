@@ -1,0 +1,61 @@
+{
+  "overall_status": "ok",
+  "problems": [],
+  "latest_session": "2026-11-06",
+  "generated_at": "2026-11-07 13:39:46.727503",
+  "provider": "yfinance",
+  "symbols": {
+    "GLD": {
+      "symbol": "GLD",
+      "status": "ok",
+      "mode": "unchanged",
+      "written": false,
+      "warnings": [],
+      "partial_dropped": false,
+      "rows_before": 2514,
+      "rows_after": 2514,
+      "new_rows": 0,
+      "first_date": "2016-11-07",
+      "last_date": "2026-11-06"
+    },
+    "SLV": {
+      "symbol": "SLV",
+      "status": "ok",
+      "mode": "unchanged",
+      "written": false,
+      "warnings": [],
+      "partial_dropped": false,
+      "rows_before": 2514,
+      "rows_after": 2514,
+      "new_rows": 0,
+      "first_date": "2016-11-07",
+      "last_date": "2026-11-06"
+    },
+    "CPER": {
+      "symbol": "CPER",
+      "status": "ok",
+      "mode": "unchanged",
+      "written": false,
+      "warnings": [],
+      "partial_dropped": false,
+      "rows_before": 2514,
+      "rows_after": 2514,
+      "new_rows": 0,
+      "first_date": "2016-11-07",
+      "last_date": "2026-11-06"
+    },
+    "USO": {
+      "symbol": "USO",
+      "status": "ok",
+      "mode": "unchanged",
+      "written": false,
+      "warnings": [],
+      "partial_dropped": false,
+      "rows_before": 2514,
+      "rows_after": 2514,
+      "new_rows": 0,
+      "first_date": "2016-11-07",
+      "last_date": "2026-11-06"
+    }
+  }
+}
