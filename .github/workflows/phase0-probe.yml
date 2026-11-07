@@ -8,7 +8,7 @@ on:
     inputs:
       tickers:
         description: "Symbole po przecinku"
-        default: "GLD,IAU,SLV,CPER,USO"
+        default: "GLD,SLV,CPER,USO"
         required: true
       period:
         description: "Okres historii (np. 10y)"

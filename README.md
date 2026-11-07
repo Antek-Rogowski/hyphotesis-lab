@@ -1,4 +1,4 @@
-# Hypothesis Lab - Faza 0
+# Hypothesis Lab
 
 Cel fazy: sprawdzić dwie rzeczy techniczne z dokumentu projektowego.
 
@@ -39,3 +39,52 @@ Tryb `--synthetic` generuje losowe dane i zapisuje je do `data_synthetic/` (igno
 
 - Wersje akcji w workflow (`checkout@v4`, `setup-python@v5`, `upload-artifact@v4`) mogą mieć nowsze wydania. Jeśli GitHub zgłosi ostrzeżenie o przestarzałej wersji, podnieś numer.
 - Harmonogram (cron) dodamy po pozytywnym wyniku sondy.
+
+---
+
+# Faza 1: silnik hipotez
+
+Biblioteka `hypothesis_lab/` liczy, w ilu przypadkach hipoteza się sprawdza, na tle bazy porównawczej, z miarami niepewności.
+Nie zależy od Streamlita, GitHub Actions ani Databricksa.
+
+## Moduły
+
+- `spec.py` - serializowalna specyfikacja hipotezy (`HypothesisSpec`, `CostModel`) ze skrótem do powtarzalności
+- `signals.py` - gotowe hipotezy: `mean_reversion`, `momentum`, `shock_rebound` (sygnał z sesji t używa tylko danych do t)
+- `engine.py` - zdarzenia, trafność, baza, test dwumianowy, bootstrap blokowy, hold-out z oczyszczeniem, test wrażliwości
+- `data.py` - wczytywanie Parquet, ceny skorygowane, znacznik sesji z zerowym wolumenem
+- `cli.py` - uruchamianie z wiersza poleceń
+
+## Szybki start
+
+    pip install -e ".[dev]"
+    python -m pytest -q
+
+    # GLD, powrót do średniej, horyzont 5 sesji, z kosztami
+    python -m hypothesis_lab.cli --symbol GLD --type mean_reversion --param W=20 --param k=2 --horizon 5 \
+        --costs --commission-bps 1 --spread-bps 2
+
+    # SLV bez 10%-owych dni w oknie pozycji, wykonanie po następnym otwarciu
+    python -m hypothesis_lab.cli --symbol SLV --type shock_rebound --param x_pct=3 --horizon 3 \
+        --exclude-extreme 0.10 --exec "open_t+1"
+
+    # demo bez danych
+    python -m hypothesis_lab.cli --synthetic --type momentum
+
+Dane są czytane z `data/<SYMBOL>.parquet` (te same pliki, które zapisuje sonda).
+
+## Założenia, które warto znać
+
+- Wykonanie `close_t`: wejście po cenie zamknięcia sesji sygnału, wyjście po N sesjach. `open_t+1`: wejście po otwarciu następnej sesji, wyjście po otwarciu sesji t+1+N.
+- Domyślnie jedna otwarta pozycja naraz (`--overlap` to wyłącza, ale wtedy p-wartość zawyża istotność).
+- Baza porównawcza to trafność tej samej mieszanki pozycji (long/short) na wszystkich sesjach okresu.
+- Hold-out to ostatnie 30% okresu. Zdarzenia próby muszą zakończyć się przed granicą podziału.
+- Test wrażliwości liczy ten sam wynik bez 5 największych dni (wg |zwrotu|).
+
+## Testy
+
+`tests/` zawiera: ręcznie policzone przykłady, test wycieku przyszłości (z meta-testem, który sprawdza, że detektor wykrywa znane wycieki), test błądzenia losowego (brak "przewagi" w szumie), testy specyfikacji i statystyki.
+
+## Usuwanie IAU
+
+Wybrano GLD jako fundusz na złoto. Plik `data/IAU.parquet` w repozytorium można usunąć.

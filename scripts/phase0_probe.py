@@ -24,7 +24,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-DEFAULT_TICKERS = ["GLD", "IAU", "SLV", "CPER", "USO"]
+DEFAULT_TICKERS = ["GLD", "SLV", "CPER", "USO"]
 COLUMNS = ["open", "high", "low", "close", "adj_close", "volume"]
 PRICE_COLUMNS = ["open", "high", "low", "close", "adj_close"]
 
