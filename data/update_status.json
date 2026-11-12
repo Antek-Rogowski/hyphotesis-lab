@@ -1,61 +1,61 @@
 {
   "overall_status": "ok",
   "problems": [],
-  "latest_session": "2026-11-10",
-  "generated_at": "2026-11-11 12:53:53.024123",
+  "latest_session": "2026-11-11",
+  "generated_at": "2026-11-12 03:23:24.906284",
   "provider": "yfinance",
   "symbols": {
     "GLD": {
       "symbol": "GLD",
       "status": "ok",
-      "mode": "unchanged",
-      "written": false,
+      "mode": "incremental",
+      "written": true,
       "warnings": [],
       "partial_dropped": false,
       "rows_before": 2513,
       "rows_after": 2513,
-      "new_rows": 0,
-      "first_date": "2016-11-10",
-      "last_date": "2026-11-10"
+      "new_rows": 1,
+      "first_date": "2016-11-11",
+      "last_date": "2026-11-11"
     },
     "SLV": {
       "symbol": "SLV",
       "status": "ok",
-      "mode": "unchanged",
-      "written": false,
+      "mode": "incremental",
+      "written": true,
       "warnings": [],
       "partial_dropped": false,
       "rows_before": 2513,
       "rows_after": 2513,
-      "new_rows": 0,
-      "first_date": "2016-11-10",
-      "last_date": "2026-11-10"
+      "new_rows": 1,
+      "first_date": "2016-11-11",
+      "last_date": "2026-11-11"
     },
     "CPER": {
       "symbol": "CPER",
       "status": "ok",
-      "mode": "unchanged",
-      "written": false,
+      "mode": "incremental",
+      "written": true,
       "warnings": [],
       "partial_dropped": false,
       "rows_before": 2513,
       "rows_after": 2513,
-      "new_rows": 0,
-      "first_date": "2016-11-10",
-      "last_date": "2026-11-10"
+      "new_rows": 1,
+      "first_date": "2016-11-11",
+      "last_date": "2026-11-11"
     },
     "USO": {
       "symbol": "USO",
       "status": "ok",
-      "mode": "unchanged",
-      "written": false,
+      "mode": "incremental",
+      "written": true,
       "warnings": [],
       "partial_dropped": false,
       "rows_before": 2513,
       "rows_after": 2513,
-      "new_rows": 0,
-      "first_date": "2016-11-10",
-      "last_date": "2026-11-10"
+      "new_rows": 1,
+      "first_date": "2016-11-11",
+      "last_date": "2026-11-11"
     }
   }
 }
