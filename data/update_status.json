@@ -1,61 +1,61 @@
 {
   "overall_status": "ok",
   "problems": [],
-  "latest_session": "2026-11-13",
-  "generated_at": "2026-11-14 12:25:44.965869",
+  "latest_session": "2026-11-16",
+  "generated_at": "2026-11-17 04:47:32.661117",
   "provider": "yfinance",
   "symbols": {
     "GLD": {
       "symbol": "GLD",
       "status": "ok",
-      "mode": "unchanged",
-      "written": false,
+      "mode": "incremental",
+      "written": true,
       "warnings": [],
       "partial_dropped": false,
       "rows_before": 2514,
-      "rows_after": 2514,
-      "new_rows": 0,
-      "first_date": "2016-11-14",
-      "last_date": "2026-11-13"
+      "rows_after": 2513,
+      "new_rows": 1,
+      "first_date": "2016-11-16",
+      "last_date": "2026-11-16"
     },
     "SLV": {
       "symbol": "SLV",
       "status": "ok",
-      "mode": "unchanged",
-      "written": false,
+      "mode": "incremental",
+      "written": true,
       "warnings": [],
       "partial_dropped": false,
       "rows_before": 2514,
-      "rows_after": 2514,
-      "new_rows": 0,
-      "first_date": "2016-11-14",
-      "last_date": "2026-11-13"
+      "rows_after": 2513,
+      "new_rows": 1,
+      "first_date": "2016-11-16",
+      "last_date": "2026-11-16"
     },
     "CPER": {
       "symbol": "CPER",
       "status": "ok",
-      "mode": "unchanged",
-      "written": false,
+      "mode": "incremental",
+      "written": true,
       "warnings": [],
       "partial_dropped": false,
       "rows_before": 2514,
-      "rows_after": 2514,
-      "new_rows": 0,
-      "first_date": "2016-11-14",
-      "last_date": "2026-11-13"
+      "rows_after": 2513,
+      "new_rows": 1,
+      "first_date": "2016-11-16",
+      "last_date": "2026-11-16"
     },
     "USO": {
       "symbol": "USO",
       "status": "ok",
-      "mode": "unchanged",
-      "written": false,
+      "mode": "incremental",
+      "written": true,
       "warnings": [],
       "partial_dropped": false,
       "rows_before": 2514,
-      "rows_after": 2514,
-      "new_rows": 0,
-      "first_date": "2016-11-14",
-      "last_date": "2026-11-13"
+      "rows_after": 2513,
+      "new_rows": 1,
+      "first_date": "2016-11-16",
+      "last_date": "2026-11-16"
     }
   }
 }
