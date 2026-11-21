@@ -1,61 +1,61 @@
 {
   "overall_status": "ok",
   "problems": [],
-  "latest_session": "2026-11-19",
-  "generated_at": "2026-11-20 14:16:18.235132",
+  "latest_session": "2026-11-20",
+  "generated_at": "2026-11-21 03:29:58.820644",
   "provider": "yfinance",
   "symbols": {
     "GLD": {
       "symbol": "GLD",
       "status": "ok",
-      "mode": "unchanged",
-      "written": false,
+      "mode": "incremental",
+      "written": true,
       "warnings": [],
       "partial_dropped": false,
       "rows_before": 2513,
-      "rows_after": 2513,
-      "new_rows": 0,
+      "rows_after": 2514,
+      "new_rows": 1,
       "first_date": "2016-11-21",
-      "last_date": "2026-11-19"
+      "last_date": "2026-11-20"
     },
     "SLV": {
       "symbol": "SLV",
       "status": "ok",
-      "mode": "unchanged",
-      "written": false,
+      "mode": "incremental",
+      "written": true,
       "warnings": [],
       "partial_dropped": false,
       "rows_before": 2513,
-      "rows_after": 2513,
-      "new_rows": 0,
+      "rows_after": 2514,
+      "new_rows": 1,
       "first_date": "2016-11-21",
-      "last_date": "2026-11-19"
+      "last_date": "2026-11-20"
     },
     "CPER": {
       "symbol": "CPER",
       "status": "ok",
-      "mode": "unchanged",
-      "written": false,
+      "mode": "incremental",
+      "written": true,
       "warnings": [],
       "partial_dropped": false,
       "rows_before": 2513,
-      "rows_after": 2513,
-      "new_rows": 0,
+      "rows_after": 2514,
+      "new_rows": 1,
       "first_date": "2016-11-21",
-      "last_date": "2026-11-19"
+      "last_date": "2026-11-20"
     },
     "USO": {
       "symbol": "USO",
       "status": "ok",
-      "mode": "unchanged",
-      "written": false,
+      "mode": "incremental",
+      "written": true,
       "warnings": [],
       "partial_dropped": false,
       "rows_before": 2513,
-      "rows_after": 2513,
-      "new_rows": 0,
+      "rows_after": 2514,
+      "new_rows": 1,
       "first_date": "2016-11-21",
-      "last_date": "2026-11-19"
+      "last_date": "2026-11-20"
     }
   }
 }
