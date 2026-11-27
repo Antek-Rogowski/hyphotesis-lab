@@ -2,14 +2,14 @@
   "overall_status": "ok",
   "problems": [],
   "latest_session": "2026-11-25",
-  "generated_at": "2026-11-26 15:37:30.148667",
+  "generated_at": "2026-11-27 04:33:15.740003",
   "provider": "yfinance",
   "symbols": {
     "GLD": {
       "symbol": "GLD",
       "status": "ok",
-      "mode": "unchanged",
-      "written": false,
+      "mode": "incremental",
+      "written": true,
       "warnings": [],
       "partial_dropped": false,
       "rows_before": 2514,
@@ -21,8 +21,8 @@
     "SLV": {
       "symbol": "SLV",
       "status": "ok",
-      "mode": "unchanged",
-      "written": false,
+      "mode": "incremental",
+      "written": true,
       "warnings": [],
       "partial_dropped": false,
       "rows_before": 2514,
