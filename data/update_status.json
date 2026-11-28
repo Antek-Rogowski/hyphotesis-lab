@@ -1,69 +1,61 @@
 {
-  "overall_status": "warn",
+  "overall_status": "ok",
   "problems": [],
-  "latest_session": "2026-11-25",
-  "generated_at": "2026-11-27 15:28:17.902549",
+  "latest_session": "2026-11-27",
+  "generated_at": "2026-11-28 04:15:37.947829",
   "provider": "yfinance",
   "symbols": {
     "GLD": {
       "symbol": "GLD",
       "status": "ok",
-      "mode": "unchanged",
-      "written": false,
-      "warnings": [
-        "odrzucono niepełną bieżącą sesję"
-      ],
-      "partial_dropped": true,
+      "mode": "incremental",
+      "written": true,
+      "warnings": [],
+      "partial_dropped": false,
       "rows_before": 2514,
       "rows_after": 2514,
-      "new_rows": 0,
-      "first_date": "2016-11-25",
-      "last_date": "2026-11-25"
+      "new_rows": 1,
+      "first_date": "2016-11-28",
+      "last_date": "2026-11-27"
     },
     "SLV": {
       "symbol": "SLV",
       "status": "ok",
-      "mode": "unchanged",
-      "written": false,
-      "warnings": [
-        "odrzucono niepełną bieżącą sesję"
-      ],
-      "partial_dropped": true,
+      "mode": "incremental",
+      "written": true,
+      "warnings": [],
+      "partial_dropped": false,
       "rows_before": 2514,
       "rows_after": 2514,
-      "new_rows": 0,
-      "first_date": "2016-11-25",
-      "last_date": "2026-11-25"
+      "new_rows": 1,
+      "first_date": "2016-11-28",
+      "last_date": "2026-11-27"
     },
     "CPER": {
       "symbol": "CPER",
       "status": "ok",
-      "mode": "unchanged",
-      "written": false,
-      "warnings": [
-        "odrzucono niepełną bieżącą sesję"
-      ],
-      "partial_dropped": true,
+      "mode": "incremental",
+      "written": true,
+      "warnings": [],
+      "partial_dropped": false,
       "rows_before": 2514,
       "rows_after": 2514,
-      "new_rows": 0,
-      "first_date": "2016-11-25",
-      "last_date": "2026-11-25"
+      "new_rows": 1,
+      "first_date": "2016-11-28",
+      "last_date": "2026-11-27"
     },
     "USO": {
       "symbol": "USO",
       "status": "ok",
-      "mode": "unchanged",
-      "written": false,
-      "warnings": [
-        "odrzucono niepełną bieżącą sesję"
-      ],
-      "partial_dropped": true,
+      "mode": "incremental",
+      "written": true,
+      "warnings": [],
+      "partial_dropped": false,
       "rows_before": 2514,
       "rows_after": 2514,
-      "new_rows": 0,
-      "first_date": "2016-11-25",
-      "last_date": "2026-11-25"
+      "new_rows": 1,
+      "first_date": "2016-11-28",
+      "last_date": "2026-11-27"
     }
   }
 }
